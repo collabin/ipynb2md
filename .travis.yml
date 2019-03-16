@@ -1,0 +1,30 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+language: R
+sudo: false
+cache: 
+  packages: yes
+  directories:
+    - $TRAVIS_BUILD_DIR/img
+dist: trusty
+
+services:
+  - docker
+
+before_install:
+  - docker pull jgoldfar/pandoc-nbconvert-docker
+
+script:
+  - ori_dir=`pwd`
+  - mkdir docs; touch docs/.nojekyll; cd docs
+  - docker run --rm -v `pwd`:/source jgoldfar/pandoc-nbconvert-docker nbconvert article.ipynb --to markdown
+  - cd $ori_dir
+
+deploy:
+  - provider: pages    # Deploy master to branch win-build
+    skip-cleanup: true
+    github-token: $GH_TOKEN  # Set in travis-ci.org dashboard
+    keep-history: true
+    local-dir: docs
+    on:
+      branch: master
+
