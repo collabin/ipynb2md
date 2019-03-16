@@ -15,7 +15,7 @@ before_install:
 
 script:
   - ori_dir=`pwd`
-  - mkdir docs; touch docs/.nojekyll; cd docs
+  - mkdir docs; touch docs/.nojekyll; cd docs; mv article.ipynb docs
   - docker run --rm -v `pwd`:/source jgoldfar/pandoc-nbconvert-docker nbconvert article.ipynb --to markdown
   - cd $ori_dir
 
